@@ -23,8 +23,11 @@ def contact(request):
         if request.method == 'POST':
             form = ContactForm(request.data)
             if form.is_valid():
-                form.save()
-                return Response({"message": "Contact created successfully!"}, status=status.HTTP_201_CREATED)
+                serializer = ContactSerializer(data=form.cleaned_data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({"message": "Contact created successfully!"}, status=status.HTTP_201_CREATED)
+                return Response({'error': 'error from serrializer'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({"message": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
         elif request.method == 'GET':
