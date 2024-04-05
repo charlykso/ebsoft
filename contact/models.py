@@ -25,4 +25,4 @@ class UserAplication(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) :
-        return f"{self.lastname} {self.firstname} -------------- {self.created_at}"
+        return f"{self.lastname} {self.firstname} -------------- {self.created_at}------------ CV sent: {self.cv}"

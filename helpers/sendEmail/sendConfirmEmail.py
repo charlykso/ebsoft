@@ -3,24 +3,22 @@ from django.core.mail import EmailMessage, send_mail, EmailMultiAlternatives
 
 from ebsoft import settings
 
-def send_email_to_user(firstname, lastname, pdf_path):
-        
-    subject=f'Resume for {firstname} {lastname}',
-    message='This is the email body.',
-    from_email='eventify141@gmail.com',
-    to=['umehlilian45@gmail.com'],
-    reply_to=['eventify141@gmail.com'],
+def send_email_to_user(firstname, lastname, pdf_file):
+    subject = 'Resume for {} {}'.format(firstname, lastname)
+    message ='This is the email body.',
+    to ='umehlilian45@gmail.com',
+    print(subject)
+    print(to[0])
+    print(message[0])
     try:
+        with pdf_file.open(mode='rb') as f:  # Open in binary read mode
+            pdf_content = f.read()
+        
         # Create an EmailMultiAlternatives object.
-        email = EmailMessage(
-            subject,
-            message,
-            settings.EMAIL_HOST_USER,
-            [to],
-        )
+        email = EmailMessage(subject, message[0], settings.EMAIL_HOST_USER, [to[0]])
 
         # Attach PDF file
-        email.attach(f'CV_{lastname}_{firstname}.pdf', pdf_path, "application/pdf")
+        email.attach(f'CV_{lastname}_{firstname}.pdf', pdf_content, "application/pdf")
 
         # Send the email.
         sent_count = email.send(fail_silently=True)

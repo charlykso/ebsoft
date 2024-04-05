@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 from .models import Contact
 from .forms import ContactForm, UserAplicationForm
-from .serializers import ContactSerializer
+from .serializers import ContactSerializer, UserAplicationSerializer
 from helpers.sendEmail.sendConfirmEmail import send_email_to_user
 
 
@@ -63,12 +63,12 @@ def apply(request):
             lastname = form.cleaned_data['lastname']
         
             sent_count = send_email_to_user(firstname, lastname, pdf_path)
-            serializer = ContactSerializer(data=form.cleaned_data)
+            serializer = UserAplicationSerializer(data=form.cleaned_data)
             if serializer.is_valid():
                 serializer.validated_data['cv'] = True if sent_count > 0 else False
-                print(serializer.data)
                 serializer.save()
-            
+            else:
+                print(serializer.errors)
             if sent_count > 0:
                 return Response({"message": "Email sent successfully!"}, status=status.HTTP_200_OK)
             return Response({"message": "Email not sent!"}, status=status.HTTP_400_BAD_REQUEST)
