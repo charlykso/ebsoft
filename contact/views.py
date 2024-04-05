@@ -5,8 +5,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 from .models import Contact
-from .forms import ContactForm
+from .forms import ContactForm, UserAplicationForm
 from .serializers import ContactSerializer
+from helpers.sendEmail.sendConfirmEmail import send_email_to_user
 
 
 # Create your views here.
@@ -47,5 +48,31 @@ def contact_detail(request, pk):
         contact = Contact.objects.get(pk=pk)
         serializer = ContactSerializer(contact, many=False)
         return Response(serializer.data)
+    except Exception as e:
+        return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def apply(request):
+    try:
+        form = UserAplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            pdf_path = form.cleaned_data['pdf_path']
+            firstname = form.cleaned_data['firstname']
+            lastname = form.cleaned_data['lastname']
+        
+            sent_count = send_email_to_user(firstname, lastname, pdf_path)
+            serializer = ContactSerializer(data=form.cleaned_data)
+            if serializer.is_valid():
+                serializer.validated_data['cv'] = True if sent_count > 0 else False
+                print(serializer.data)
+                serializer.save()
+            
+            if sent_count > 0:
+                return Response({"message": "Email sent successfully!"}, status=status.HTTP_200_OK)
+            return Response({"message": "Email not sent!"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
+        
     except Exception as e:
         return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
