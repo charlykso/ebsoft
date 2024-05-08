@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-=fknlji=jon-ycsz_zihh&nx3a_)3oxd4hxse-4yv-=q5rvsqh
 DEBUG = False
 
 ALLOWED_HOSTS = ['*', 'localhost', 'localhost:3000', 'http://localhost:3000']
+CORS_ORIGIN_ALLOW_ALL = True
 
 APPEND_SLASH=False
 
@@ -50,11 +51,11 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 
 ]
 
