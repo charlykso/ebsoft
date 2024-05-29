@@ -83,15 +83,16 @@ def apply(request):
             # print(data)
             sent_count = send_email_to_user(data, pdf_path)
             serializer = UserAplicationSerializer(data=form.cleaned_data)
-            if serializer.is_valid():
-                # print("serializer is valid")
-                serializer.validated_data['cv'] = True if sent_count != 1 else False
+            if serializer.is_valid() and sent_count > 0:
+                print("serializer is valid")
+                serializer.validated_data['cv'] = False if sent_count != 1 else True
+                print(serializer.validated_data)
                 serializer.save()
+                return Response({"message": "Email sent successfully!", "data": serializer.data}, status=status.HTTP_200_OK)
             else:
                 print(serializer.errors)
                 raise ValidationError("Invalid serializer data")
-            if sent_count > 0:
-                return Response({"message": "Email sent successfully!"}, status=status.HTTP_200_OK)
+            
             return Response({"message": "Email not sent!"}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"message": "Invalid form data"}, status=status.HTTP_400_BAD_REQUEST)
         
