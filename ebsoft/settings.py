@@ -64,7 +64,9 @@ ROOT_URLCONF = 'ebsoft.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -158,7 +160,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # sending email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 25
+EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'eventify141@gmail.com'
-EMAIL_HOST_PASSWORD = 'bxyrevolpkultjsa'
+EMAIL_HOST_PASSWORD = 'pznmxgklydcsakas'
+# EMAIL_HOST_USER = 'ikennaremigius141@gmail.com'
+# EMAIL_HOST_PASSWORD = 'glwobekilkfdfxnw'
+
