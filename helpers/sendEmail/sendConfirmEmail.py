@@ -8,7 +8,7 @@ from ebsoft import settings
 def send_email_to_user(data, pdf_file):
     name = data['fullname'].replace(" ", "_")
     subject = '{} Application  From'.format(data['fullname'])
-    to = 'charlykso141@gmail.com',
+    to = 'umehlilian45@gmail.com',
     context = {
         'fullname': data['fullname'],
         'email': data['email'],
