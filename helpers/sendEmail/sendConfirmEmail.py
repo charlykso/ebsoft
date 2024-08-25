@@ -22,7 +22,8 @@ def send_email_to_user(data, pdf_file):
         'years_of_experience': data['years_of_experience'],
         'linkedin_profile': data['linkedin_profile'],
         'github_profile': data['github_profile'],
-        'portfolio': data['portfolio']
+        'portfolio': data['portfolio'],
+        'contact_me': data['contact_me']
     }
     template = get_template('email_template.html')
     html_content = template.render(context)

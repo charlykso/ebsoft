@@ -4,7 +4,7 @@ from django.db import models
 class Contact(models.Model):
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
-    email = models.EmailField()
+    email = models.EmailField(unique=False)
     phone = models.CharField(max_length=20)
     subject = models.CharField(max_length=100)
     message = models.TextField()
@@ -18,7 +18,7 @@ class Contact(models.Model):
 
 class UserAplication(models.Model):
     fullname = models.CharField(max_length=160)
-    email = models.EmailField(unique=False)
+    email = models.EmailField(max_length=254)
     phone_number = models.CharField(max_length=100)
     current_location = models.CharField(max_length=160)
     current_company = models.CharField(max_length=160)
@@ -33,6 +33,7 @@ class UserAplication(models.Model):
     portfolio = models.URLField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    contact_me = models.BooleanField(default=False)
 
     def __str__(self) :
         return f"{self.lastname} {self.firstname} -------------- {self.created_at}------------ CV sent: {self.cv}"
