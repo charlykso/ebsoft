@@ -62,8 +62,10 @@ def apply(request):
     try:
         form = UserAplicationForm(request.POST, request.FILES)
         if form.is_valid():
-            # print("form is valid")
+            print(request.FILES['pdf_path'])
             pdf_path = form.cleaned_data['pdf_path']
+            print(pdf_path)
+            contact_me = form.cleaned_data['contact_me']
             
             data = {
                 'fullname': form.cleaned_data['fullname'],
@@ -78,23 +80,69 @@ def apply(request):
                 'years_of_experience': form.cleaned_data['years_of_experience'],
                 'linkedin_profile': form.cleaned_data['linkedin_profile'],
                 'github_profile': form.cleaned_data['github_profile'],
-                'portfolio': form.cleaned_data['portfolio']
+                'portfolio': form.cleaned_data['portfolio'],
+                'contact_me': contact_me
             }
-            # print(data)
+
             sent_count = send_email_to_user(data, pdf_path)
             serializer = UserAplicationSerializer(data=form.cleaned_data)
-            if serializer.is_valid() and sent_count > 0:
-                print("serializer is valid")
-                serializer.validated_data['cv'] = False if sent_count != 1 else True
-                print(serializer.validated_data)
+            if serializer.is_valid():
+                serializer.validated_data['cv'] = sent_count == 1
                 serializer.save()
                 return Response({"message": "Email sent successfully!", "data": serializer.data}, status=status.HTTP_200_OK)
             else:
-                print(serializer.errors)
-                raise ValidationError("Invalid serializer data")
-            
-            return Response({"message": "Email not sent!"}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"message": "Invalid form data"}, status=status.HTTP_400_BAD_REQUEST)
-        
+                return Response({"message": "Invalid serializer data", "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message": "Invalid form data", "errors": form.errors}, status=status.HTTP_400_BAD_REQUEST)
+    except ValidationError as e:
+        return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
-        return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"message": "An error occurred: " + str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def apply(request):
+#     try:
+#         print(request.FILES['contact_me'])
+#         form = UserAplicationForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             # print("form is valid")
+#             pdf_path = form.cleaned_data['pdf_path']
+#             contact_me = True if form.cleaned_data['contact_me'] == 'True' else False
+            
+#             data = {
+#                 'fullname': form.cleaned_data['fullname'],
+#                 'email': form.cleaned_data['email'],
+#                 'phone_number': form.cleaned_data['phone_number'],
+#                 'current_location': form.cleaned_data['current_location'],
+#                 'current_company': form.cleaned_data['current_company'],
+#                 'notice_period': form.cleaned_data['notice_period'],
+#                 'salary_expectation': form.cleaned_data['salary_expectation'],
+#                 'gender': form.cleaned_data['gender'],
+#                 'referral_source': form.cleaned_data['referral_source'],
+#                 'years_of_experience': form.cleaned_data['years_of_experience'],
+#                 'linkedin_profile': form.cleaned_data['linkedin_profile'],
+#                 'github_profile': form.cleaned_data['github_profile'],
+#                 'portfolio': form.cleaned_data['portfolio'],
+#                 'contact_me': contact_me
+#             }
+#             print(data)
+#             sent_count = send_email_to_user(data, pdf_path)
+#             serializer = UserAplicationSerializer(data=form.cleaned_data)
+#             if serializer.is_valid() and sent_count > 0:
+#                 print("serializer is valid")
+#                 serializer.validated_data['cv'] = False if sent_count != 1 else True
+#                 serializer.validated_data['contact_me'] = True if contact_me else False
+#                 print(serializer.validated_data)
+#                 serializer.save()
+#                 return Response({"message": "Email sent successfully!", "data": serializer.data}, status=status.HTTP_200_OK)
+#             else:
+#                 print(serializer.errors)
+#                 raise ValidationError("Invalid serializer data")
+            
+#             return Response({"message": "Email not sent!"}, status=status.HTTP_400_BAD_REQUEST)
+#         return Response({"message": "Invalid form data"}, status=status.HTTP_400_BAD_REQUEST)
+        
+#     except Exception as e:
+#         return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

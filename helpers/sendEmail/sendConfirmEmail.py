@@ -50,7 +50,7 @@ def send_email_to_user(data, pdf_file):
     except Exception as e:
         error_message = str(e)
         print(f"Error sending email: {error_message}")
-        return 0
+        raise ValueError(error_message)
 
 def generate_random_code():
     """Generates a random 6-letter string that combines letters and digits."""

@@ -26,3 +26,4 @@ class UserAplicationForm(forms.Form):
     portfolio = forms.URLField(max_length=500)
     pdf_path = forms.FileField()
     cv = forms.BooleanField(required=False)
+    contact_me = forms.BooleanField(required=False)
