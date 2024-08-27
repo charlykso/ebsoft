@@ -18,12 +18,12 @@ class Contact(models.Model):
 
 class UserAplication(models.Model):
     fullname = models.CharField(max_length=160)
-    email = models.EmailField(max_length=254)
+    email = models.EmailField(max_length=250)
     phone_number = models.CharField(max_length=100)
     current_location = models.CharField(max_length=160)
     current_company = models.CharField(max_length=160)
     notice_period = models.CharField(max_length=100)
-    salary_expectation = models.CharField(max_length=100)
+    salary_expectation = models.CharField(max_length=105)
     gender = models.CharField(max_length=100)
     referral_source = models.CharField(max_length=200)
     years_of_experience = models.CharField(max_length=50)
